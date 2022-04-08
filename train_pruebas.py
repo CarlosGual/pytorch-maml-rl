@@ -1,6 +1,7 @@
 import gym
 import torch
 import json
+import gym_miniworld
 import os
 import yaml
 from tqdm import trange

@@ -4,9 +4,9 @@
 env-name: "MiniWorld-MazeS3Fast-v0"
 
 # Additional parameters for the environment (eg. bound for task sampling).
-env-kwargs:
-  low: -0.5
-  high: 0.5
+#env-kwargs:
+#  low: -0.5
+#  high: 0.5
 
 # Discount factor gamma.
 gamma: 0.99
