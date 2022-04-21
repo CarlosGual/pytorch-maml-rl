@@ -14,11 +14,19 @@ from maml_rl.utils.helpers import get_policy_for_env, get_input_size
 from maml_rl.utils.reinforcement_learning import get_returns
 
 # Args
-config_file = 'configs/maml/3d-maze.yaml'
-output_folder = '3d-maze'
+config_file = 'configs/maml/2d-navigation.yaml'
+output_folder = '2d-nav2'
 seed = 1
 num_workers = 11
 device = 'cpu'
+
+dict = {
+    'config_file': config_file,
+    'output_folder': output_folder,
+    'seed': seed,
+    'num_workers': num_workers,
+    'device': device
+}
 
 with open(config_file, 'r') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
@@ -29,9 +37,9 @@ if output_folder is not None:
     policy_filename = os.path.join(output_folder, 'policy.th')
     config_filename = os.path.join(output_folder, 'config.json')
 
-    # with open(config_filename, 'w') as f:
-    #     config.update(vars(args))
-    #     json.dump(config, f, indent=2)
+    with open(config_filename, 'w') as f:
+        config.update(dict)
+        json.dump(config, f, indent=2)
 
 if seed is not None:
     torch.manual_seed(seed)
