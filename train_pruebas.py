@@ -15,7 +15,7 @@ from maml_rl.utils.reinforcement_learning import get_returns
 
 # Args
 config_file = 'configs/maml/2d-navigation.yaml'
-output_folder = '2d-nav2'
+output_folder = '2d-nav3'
 seed = 1
 num_workers = 11
 device = 'cpu'

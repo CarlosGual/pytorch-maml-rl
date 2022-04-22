@@ -4,6 +4,7 @@ import torch
 import json
 import numpy as np
 from tqdm import trange
+import pickle
 
 from maml_rl.baseline import LinearFeatureBaseline
 from maml_rl.samplers import MultiTaskSampler
@@ -11,9 +12,9 @@ from maml_rl.utils.helpers import get_policy_for_env, get_input_size
 from maml_rl.utils.reinforcement_learning import get_returns
 
 # Args
-output = '2d-nav/results.npz'
-config = '2d-nav/config.json'
-policy_path = '2d-nav/policy.th'
+output = '2d-nav3/results.pkl'
+config = '2d-nav3/config.json'
+policy_path = '2d-nav3/policy.th'
 seed = 1
 num_workers = 11
 device = 'cpu'
@@ -55,6 +56,8 @@ sampler = MultiTaskSampler(config['env-name'],
 
 logs = {'tasks': []}
 train_returns, valid_returns = [], []
+e = {'tasks': []}
+a1, a2 = [], []
 for batch in trange(num_batches):
     tasks = sampler.sample_tasks(num_tasks=meta_batch_size)
     train_episodes, valid_episodes = sampler.sample(tasks,
@@ -65,11 +68,21 @@ for batch in trange(num_batches):
                                                     device=device)
 
     logs['tasks'].extend(tasks)
-    train_returns.append(get_returns(train_episodes[0]))
-    valid_returns.append(get_returns(valid_episodes))
+    train_returns.append(train_episodes[0])
+    valid_returns.append(valid_episodes)
 
-logs['train_returns'] = np.concatenate(train_returns, axis=0)
-logs['valid_returns'] = np.concatenate(valid_returns, axis=0)
+    e['tasks'].extend(tasks)
+    a1.append(get_returns(train_episodes[0]))
+    a2.append(get_returns(valid_episodes))
+
+e['train_returns'] = np.concatenate(a1, axis=0)
+e['valid_returns'] = np.concatenate(a2, axis=0)
+
+logs['train_episodes'] = train_returns
+logs['valid_episodes'] = valid_returns
 
 with open(output, 'wb') as f:
-    np.savez(f, **logs)
+    pickle.dump(logs, f)
+
+with open('2d-nav3/results.npz', 'wb') as f:
+    np.savez(f, **e)
