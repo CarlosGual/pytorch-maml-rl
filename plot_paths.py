@@ -8,9 +8,10 @@ prefixes = ['maml', 'pretrain']
 
 n_itr = 4
 
-with open('../../2d-nav3/results.pkl', 'rb') as f:
+with open('2d-nav3/results.pkl', 'rb') as f:
     file = pickle.load(f)
 
+fig = plt.figure(figsize=(10, 10))
 plt.clf()
 itr_line_styles = [':', '-.', '--', '-']
 maml_colors = ['dodgerblue', None, None, 'darkblue']
@@ -19,6 +20,7 @@ pretrain_colors = ['limegreen', None, None, 'darkgreen']
 #plt.figure(figsize=(9.0,4.5))
 batch = 0
 meta_batch = 12
+rollout = 8
 if batch == 0 and meta_batch == 0:
     task = 0
 elif batch == 0 and meta_batch != 0:
@@ -27,7 +29,7 @@ elif batch != 0 and meta_batch == 0:
     task = batch * 20
 else:
     task = batch * meta_batch
-rollout = 8
+
 
 # get last non zero index
 last_non_zero_idx_obs = int(np.max(np.nonzero(to_numpy(file['valid_episodes'][batch][meta_batch].actions[:, rollout, :]))))
@@ -45,9 +47,10 @@ plt.plot(paths2[:, 0], paths2[:, 1], itr_line_styles[1], color=maml_colors[1], l
 
 plt.plot(file['tasks'][task]['goal'][0], file['tasks'][task]['goal'][1], 'r*', markersize=28, markeredgewidth=0)
 plt.title('MAML', fontsize=25)
-plt.legend(['pre-update',  '3 steps', 'goal position'], fontsize=23, loc='clean') #, 'pretrain preupdate', 'pretrain 3 steps'])
-# plt.xlim([-1, 1])
-# plt.ylim([-1, 1])
+plt.legend(['pre-update',  '3 steps', 'goal position'], fontsize=15, bbox_to_anchor=(1,0), loc="lower right",
+                bbox_transform=fig.transFigure, ncol=3) #, 'pretrain preupdate', 'pretrain 3 steps'])
+# plt.xlim([-0.7, 0.2])
+# plt.ylim([-0.15, 0.3])
 plt.tight_layout()
 ax = plt.gca()
 plt.setp(ax.get_xticklabels(), fontsize=14)
